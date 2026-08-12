@@ -100,7 +100,7 @@ body {
   flex-direction: column;
   gap: 24px;
   margin-bottom: 48px;
-  direction: ltr;
+  direction: rtl;
 }
 
 @media (min-width: 768px) {
