@@ -215,6 +215,7 @@ select:focus-visible {
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
+  direction: ltr;
 }
 
 @media (min-width: 860px) {
