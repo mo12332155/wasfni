@@ -1,220 +1,251 @@
-// Local Storage Demo Counter Keys
-const STORAGE_KEY_USAGE = 'wasfni_usage_count';
-const MAX_FREE_USAGE = 5;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', () => {
-  updateUsageDisplay();
-});
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>وصفني | اكتب وصف منتجك في ثوانٍ</title>
+  <meta name="description" content="وصفني يساعدك على تحويل معلومات منتجك إلى وصف عربي جاهز للنشر والبيع.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-// Get current usage count
-function getUsageCount() {
-  const saved = localStorage.getItem(STORAGE_KEY_USAGE);
-  return saved ? parseInt(saved, 10) : 0;
-}
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-container">
+      <a href="#top" class="logo">وصفني</a>
+      <nav aria-label="التنقل الرئيسي" class="main-nav">
+        <a href="#tool">أداة التوليد</a>
+        <a href="#pricing">الخطط والأسعار</a>
+        <a href="#faq">الأسئلة الشائعة</a>
+      </nav>
+    </div>
+  </header>
 
-// Update Usage Count Display & Limit Check
-function updateUsageDisplay() {
-  const count = getUsageCount();
-  const countElem = document.getElementById('usage-count');
-  const bannerElem = document.getElementById('usage-banner');
-  const generateBtn = document.getElementById('generate-btn');
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container hero-container">
+        <h1>اكتب وصف منتجك في ثوانٍ</h1>
+        <p>وصفني يساعدك على تحويل معلومات منتجك إلى وصف عربي جاهز للنشر والبيع.</p>
+      </div>
+    </section>
 
-  if (countElem) {
-    countElem.textContent = count;
-  }
+    <!-- Generator Tool Section -->
+    <section id="tool" class="tool-section">
+      <div class="container">
+        
+        <!-- Banner/Counter for Local Free Limit Demo -->
+        <div id="usage-banner" class="usage-banner" aria-live="polite">
+          <span>استخدمت <strong id="usage-count">0</strong> من 5 أوصاف مجانية</span>
+        </div>
 
-  if (bannerElem) {
-    if (count >= MAX_FREE_USAGE) {
-      bannerElem.classList.add('limit-reached');
-      bannerElem.innerHTML = `
-        <span>استهلكت استخداماتك المجانية (5/5). يمكنك طلب Pro للحصول على استخدام أكبر.</span>
-        <button type="button" onclick="openProModal()" class="btn btn-primary" style="margin-right:10px; padding:4px 12px; font-size:0.85rem;">تواصل لطلب Pro</button>
-      `;
-    } else {
-      bannerElem.classList.remove('limit-reached');
-      bannerElem.innerHTML = `<span>استخدمت <strong id="usage-count">${count}</strong> من ${MAX_FREE_USAGE} أوصاف مجانية</span>`;
-    }
-  }
-}
+        <div class="tool-grid">
+          <!-- Input Form -->
+          <div class="card form-card">
+            <h2>بيانات المنتج</h2>
+            <form id="product-form" onsubmit="event.preventDefault(); generateProductCopy();">
+              <div class="form-group">
+                <label for="product-name">اسم المنتج <span class="required">*</span></label>
+                <input type="text" id="product-name" placeholder="مثال: حذاء رياضي مريح" required>
+              </div>
 
-// Increment Usage Count
-function incrementUsage() {
-  let count = getUsageCount();
-  count += 1;
-  localStorage.setItem(STORAGE_KEY_USAGE, count.toString());
-  updateUsageDisplay();
-}
+              <div class="form-group">
+                <label for="product-features">مميزات المنتج / التفاصيل</label>
+                <textarea id="product-features" rows="4" placeholder="مثال: مريح للمشي الطويل، نعل طبي، خفيف الوزن، متوفر بألوان متعددة"></textarea>
+              </div>
 
-// Main Copy Generation Function
-function generateProductCopy() {
-  const nameInput = document.getElementById('product-name');
-  const featuresInput = document.getElementById('product-features');
-  const toneSelect = document.getElementById('tone-select');
+              <div class="form-group">
+                <label for="tone-select">نبرة الكتابة</label>
+                <select id="tone-select">
+                  <option value="friendly">ودي وجذاب</option>
+                  <option value="professional">احترافي ومباشر</option>
+                  <option value="enthusiastic">حماسي ومشجع</option>
+                </select>
+              </div>
 
-  const productName = nameInput ? nameInput.value.trim() : '';
-  const productFeatures = featuresInput ? featuresInput.value.trim() : '';
-  const tone = toneSelect ? toneSelect.value : 'friendly';
+              <div class="form-actions">
+                <button type="submit" id="generate-btn" class="btn btn-primary">إنشاء الوصف</button>
+                <button type="button" id="clear-btn" class="btn btn-secondary" onclick="clearForm()">مسح</button>
+              </div>
+            </form>
+          </div>
 
-  if (!productName) {
-    showToast('يرجى كتابة اسم المنتج أولاً.');
-    if (nameInput) nameInput.focus();
-    return;
-  }
+          <!-- Output Results -->
+          <div class="card result-card">
+            <h2>النتيجة</h2>
+            <div aria-live="polite" id="result-container">
+              <!-- Placeholder State -->
+              <div id="result-placeholder" class="result-state">
+                <p>املأ بيانات المنتج على اليمين ثم اضغط "إنشاء الوصف" لترى النتيجة هنا.</p>
+              </div>
 
-  // Local Usage Limit Check
-  const currentUsage = getUsageCount();
-  if (currentUsage >= MAX_FREE_USAGE) {
-    showToast('استهلكت استخداماتك المجانية. يمكنك طلب Pro للحصول على استخدام أكبر.');
-    openProModal();
-    return;
-  }
+              <!-- Loading State -->
+              <div id="result-loading" class="result-state" hidden>
+                <div class="spinner" aria-hidden="true"></div>
+                <p>جاري تجهيز الوصف...</p>
+              </div>
 
-  // Show Loading State
-  showState('loading');
+              <!-- Error State -->
+              <div id="result-error" class="result-state error-message" hidden>
+                <p id="error-text"></p>
+              </div>
 
-  // Simulate Generation Delay
-  setTimeout(() => {
-    try {
-      // Build Output Content based on input
-      const title = `${productName} — الاختيار الأمثل لاحتياجك`;
-      
-      let desc = '';
-      if (tone === 'professional') {
-        desc = `تم تصميم ${productName} خصيصاً ليقدم لك أعلى مستويات الجودة والأداء. يعتمد على حلول مدروسة لتلبية تطلعاتك بكفاءة عالية.`;
-      } else if (tone === 'enthusiastic') {
-        desc = `لا تفوّت فرصة الحصول على ${productName}! المنتج الأكثر روعة الذي سيغير تجربتك بالكامل ويمنحك التميز الذي تستحقه اليوم!`;
-      } else {
-        desc = `استمتع بتجربة فريدة مع ${productName}. صُمم بحب وعناية ليكون الخيار الأنسب لك في كل وقت.`;
-      }
+              <!-- Content State -->
+              <div id="result-content" class="result-state" hidden>
+                <div class="result-block">
+                  <div class="result-header">
+                    <h3>عنوان المنتج</h3>
+                    <button class="btn-copy" onclick="copyText('title-output')">نسخ</button>
+                  </div>
+                  <p id="title-output"></p>
+                </div>
 
-      const featureItems = productFeatures
-        ? productFeatures.split(/,|\n/).map(f => f.trim()).filter(f => f.length > 0)
-        : ['جودة ممتازة وسعر مناسب', 'سهولة الاستخدام والراحة', 'تصميم عصري وجذاب'];
+                <div class="result-block">
+                  <div class="result-header">
+                    <h3>الوصف التسويقي</h3>
+                    <button class="btn-copy" onclick="copyText('desc-output')">نسخ</button>
+                  </div>
+                  <p id="desc-output"></p>
+                </div>
 
-      const cta = `اطلب ${productName} الآن واستفد من العرض الحصري قبل نفاذ الكمية!`;
-      const social = `✨ هل تبحث عن ${productName}؟\nالحل الجاهز بين يديك الآن! 🚀\nاطلبه اليوم واحصل على أفضل تجربة. #وصفني #${productName.replace(/\s+/g, '_')}`;
+                <div class="result-block">
+                  <div class="result-header">
+                    <h3>المميزات</h3>
+                    <button class="btn-copy" onclick="copyText('features-output')">نسخ</button>
+                  </div>
+                  <ul id="features-output"></ul>
+                </div>
 
-      // Populate Result Fields
-      document.getElementById('title-output').textContent = title;
-      document.getElementById('desc-output').textContent = desc;
-      
-      const featuresUl = document.getElementById('features-output');
-      featuresUl.innerHTML = '';
-      featureItems.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        featuresUl.appendChild(li);
-      });
+                <div class="result-block">
+                  <div class="result-header">
+                    <h3>دعوة لاتخاذ إجراء (CTA)</h3>
+                    <button class="btn-copy" onclick="copyText('cta-output')">نسخ</button>
+                  </div>
+                  <p id="cta-output"></p>
+                </div>
 
-      document.getElementById('cta-output').textContent = cta;
-      document.getElementById('social-output').textContent = social;
+                <div class="result-block">
+                  <div class="result-header">
+                    <h3>منشور قصير لسوشيال ميديا</h3>
+                    <button class="btn-copy" onclick="copyText('social-output')">نسخ</button>
+                  </div>
+                  <p id="social-output"></p>
+                </div>
 
-      // Increment Usage Counter
-      incrementUsage();
+                <div class="result-actions">
+                  <button type="button" class="btn btn-secondary" onclick="generateProductCopy()">إعادة توليد</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      // Display Content State
-      showState('content');
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+      <div class="container">
+        <div class="section-title">
+          <h2>اختر الخطة المناسبة لمشروعك</h2>
+          <p>ابدأ مجانًا ورَقّ حسابك عندما تحتاج لنتائج أكبر وأسرع</p>
+        </div>
 
-    } catch (err) {
-      showError('حدث خطأ أثناء إعداد الوصف. يرجى المحاولة مرة أخرى.');
-    }
-  }, 700);
-}
+        <div class="pricing-grid">
+          <!-- FREE Plan -->
+          <div class="pricing-card">
+            <div class="plan-header">
+              <h3>مجاني</h3>
+              <div class="plan-price">0 <span>جنيه</span></div>
+              <p>لتجربة الأداة وبدء كتابة أوصاف منتجاتك</p>
+            </div>
+            <ul class="plan-features">
+              <li>✓ 5 أوصاف</li>
+              <li>✓ عنوان المنتج</li>
+              <li>✓ وصف المنتج</li>
+              <li>✓ المميزات</li>
+              <li>✓ نسخ النتيجة</li>
+            </ul>
+            <a href="#tool" class="btn btn-outline">استخدمه الآن مجاناً</a>
+          </div>
 
-// UI State Switcher
-function showState(stateName) {
-  const placeholder = document.getElementById('result-placeholder');
-  const loading = document.getElementById('result-loading');
-  const error = document.getElementById('result-error');
-  const content = document.getElementById('result-content');
+          <!-- PRO Plan -->
+          <div class="pricing-card plan-pro">
+            <div class="badge">الأكثر طلباً</div>
+            <div class="plan-header">
+              <h3>Pro</h3>
+              <div class="plan-price">50 <span>جنيه</span></div>
+              <p>للمتاجر الإلكترونية وصُنّاع المحتوى المحترفين</p>
+            </div>
+            <ul class="plan-features">
+              <li>✓ 100 وصف</li>
+              <li>✓ إعادة توليد للنتائج</li>
+              <li>✓ منشور قصير للسوشيال ميديا</li>
+              <li>✓ نبرات كتابة إضافية</li>
+              <li>✓ الوصول إلى الميزات الجديدة</li>
+            </ul>
+            <button type="button" class="btn btn-primary" onclick="openProModal()">احصل على Pro — 50 جنيه</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  if (placeholder) placeholder.hidden = (stateName !== 'placeholder');
-  if (loading) loading.hidden = (stateName !== 'loading');
-  if (error) error.hidden = (stateName !== 'error');
-  if (content) content.hidden = (stateName !== 'content');
-}
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+      <div class="container">
+        <div class="section-title">
+          <h2>الأسئلة الشائعة</h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <h3>هل أحتاج إلى حساب؟</h3>
+            <p>لا، يمكنك استخدام الأداة بدون تسجيل.</p>
+          </div>
+          <div class="faq-item">
+            <h3>هل Pro متاح الآن؟</h3>
+            <p>يتم تفعيل Pro بعد تأكيد الطلب والدفع.</p>
+          </div>
+          <div class="faq-item">
+            <h3>هل يمكن تجربة الأداة مجانًا؟</h3>
+            <p>نعم.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-// Show Error
-function showError(message) {
-  const errorText = document.getElementById('error-text');
-  if (errorText) errorText.textContent = message;
-  showState('error');
-}
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div>
+        <p class="footer-logo">وصفني</p>
+        <p>أداة عربية بسيطة لمساعدة أصحاب المشاريع على كتابة أوصاف أفضل لمنتجاتهم.</p>
+      </div>
+    </div>
+  </footer>
 
-// Form Clear
-function clearForm() {
-  document.getElementById('product-name').value = '';
-  document.getElementById('product-features').value = '';
-  document.getElementById('tone-select').selectedIndex = 0;
-  showState('placeholder');
-}
+  <!-- Pro Modal -->
+  <div id="pro-modal" class="modal-backdrop" hidden onclick="closeProModalOnBackdrop(event)">
+    <div class="modal-dialog" role="dialog" aria-labelledby="modal-title">
+      <button class="modal-close" onclick="closeProModal()" aria-label="إغلاق">&times;</button>
+      <div class="modal-header">
+        <h2 id="modal-title">باقة Pro</h2>
+        <div class="modal-price">50 جنيه</div>
+      </div>
+      <div class="modal-body">
+        <p>لإتمام الطلب، تواصل معنا وسيتم تفعيل الباقة بعد تأكيد الدفع.</p>
+      </div>
+      <div class="modal-footer">
+        <!-- Placeholder contact button (WhatsApp or Email placeholder) -->
+        <a href="https://wa.me/200000000000?text=%D0%A3%D1%80%D0%B8%D0%B4%20%D0%B7%D0%B0%D0%BB%D0%B1%20%D0%B1%D0%B0%D0%20Pro" target="_blank" rel="noopener" class="btn btn-primary btn-block">تواصل لطلب Pro</a>
+        <button type="button" class="btn btn-secondary btn-block" onclick="closeProModal()">إلغاء</button>
+      </div>
+    </div>
+  </div>
 
-// Copy Text Helper
-function copyText(elementId) {
-  const elem = document.getElementById(elementId);
-  if (!elem) return;
+  <!-- Status / Toast Notification -->
+  <div id="toast" class="toast" aria-live="polite" role="status" hidden></div>
 
-  let textToCopy = '';
-  if (elem.tagName === 'UL') {
-    textToCopy = Array.from(elem.querySelectorAll('li')).map(li => `• ${li.textContent}`).join('\n');
-  } else {
-    textToCopy = elem.textContent;
-  }
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      showToast('تم النسخ بنجاح!');
-    }).catch(() => {
-      fallbackCopy(textToCopy);
-    });
-  } else {
-    fallbackCopy(textToCopy);
-  }
-}
-
-function fallbackCopy(text) {
-  const textArea = document.createElement('textarea');
-  textArea.value = text;
-  document.body.appendChild(textArea);
-  textArea.select();
-  try {
-    document.execCommand('copy');
-    showToast('تم النسخ بنجاح!');
-  } catch (err) {
-    showToast('تعذر النسخ تلقائياً.');
-  }
-  document.body.removeChild(textArea);
-}
-
-// Toast Notification
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  if (!toast) return;
-  toast.textContent = message;
-  toast.hidden = false;
-  setTimeout(() => {
-    toast.hidden = true;
-  }, 2500);
-}
-
-// Pro Modal Controls
-function openProModal() {
-  const modal = document.getElementById('pro-modal');
-  if (modal) {
-    modal.hidden = false;
-  }
-}
-
-function closeProModal() {
-  const modal = document.getElementById('pro-modal');
-  if (modal) {
-    modal.hidden = true;
-  }
-}
-
-function closeProModalOnBackdrop(event) {
-  if (event.target.id === 'pro-modal') {
-    closeProModal();
-  }
-}
+  <script src="app.js"></script>
+</body>
+</html>
