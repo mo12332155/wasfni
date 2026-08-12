@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>وصفني | مولّد وصف المنتجات بالعربي</title>
+  <meta name="description" content="أنشئ أوصافًا عربية احترافية لمنتجاتك في ثوانٍ باستخدام أداة وصفني المجانية.">
+  <link rel="canonical" href="https://example.com/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="وصفني | مولّد وصف المنتجات بالعربي">
+  <meta property="og:description" content="أنشئ أوصافًا عربية احترافية لمنتجاتك في ثوانٍ باستخدام أداة وصفني المجانية.">
+  <meta property="og:locale" content="ar_AR">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="logo">وصفني</a>
+      <nav class="main-nav" aria-label="التنقل الرئيسي">
+        <a href="#tool" class="nav-link">أداة التوليد</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <h1 class="hero-title">اكتب وصف منتجك في ثوانٍ</h1>
+        <p class="hero-subtitle">وصفني يساعدك على تحويل معلومات منتجك إلى وصف عربي جاهز للنشر والبيع.</p>
+        <button type="button" id="heroCta" class="btn btn-primary btn-lg">ابدأ مجانًا</button>
+      </div>
+    </section>
+
+    <!-- Tool Section -->
+    <section id="tool" class="tool-section">
+      <div class="container">
+
+        <div class="tool-grid">
+
+          <!-- Form Card -->
+          <div class="card form-card">
+            <h2 class="card-title">بيانات المنتج</h2>
+
+            <form id="productForm" novalidate>
+
+              <div class="form-group">
+                <label for="productName">اسم المنتج</label>
+                <input
+                  type="text"
+                  id="productName"
+                  name="productName"
+                  placeholder="مثال: تيشيرت قطن أسود"
+                  maxlength="80"
+                  autocomplete="off"
+                >
+                <p class="field-error" id="productNameError" role="alert"></p>
+              </div>
+
+              <div class="form-group">
+                <label for="productType">نوع المنتج</label>
+                <input
+                  type="text"
+                  id="productType"
+                  name="productType"
+                  placeholder="مثال: ملابس رجالية"
+                  maxlength="60"
+                  autocomplete="off"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="productFeatures">أهم المميزات</label>
+                <textarea
+                  id="productFeatures"
+                  name="productFeatures"
+                  rows="3"
+                  placeholder="مثال: قطن 100%، مريح، متوفر بعدة مقاسات"
+                  maxlength="300"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="targetAudience">
+                  الجمهور المستهدف
+                  <span class="optional-tag">اختياري</span>
+                </label>
+                <input
+                  type="text"
+                  id="targetAudience"
+                  name="targetAudience"
+                  placeholder="مثال: الشباب من 18 إلى 30 سنة"
+                  maxlength="80"
+                  autocomplete="off"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="writingTone">نبرة الكتابة</label>
+                <select id="writingTone" name="writingTone">
+                  <option value="professional">احترافية</option>
+                  <option value="friendly">ودية</option>
+                  <option value="marketing">تسويقية</option>
+                  <option value="simple">بسيطة</option>
+                  <option value="luxury">فاخرة</option>
+                </select>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" id="generateBtn" class="btn btn-primary btn-lg">
+                  <span class="btn-icon" aria-hidden="true">✨</span>
+                  <span>إنشاء الوصف</span>
+                </button>
+                <button type="button" id="clearBtn" class="btn btn-ghost">مسح</button>
+              </div>
+
+              <div class="storage-note">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="saveLocallyToggle" checked>
+                  <span>احفظ إدخالي محليًا في هذا المتصفح</span>
+                </label>
+                <button type="button" id="clearStorageBtn" class="link-btn">مسح البيانات المحفوظة</button>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Result Card -->
+          <div class="card result-card">
+            <h2 class="card-title">النتيجة</h2>
+
+            <div id="resultArea" aria-live="polite">
+
+              <!-- Empty State -->
+              <div id="emptyState" class="state-box empty-state">
+                <p>املأ بيانات المنتج على اليسار ثم اضغط "إنشاء الوصف" لترى النتيجة هنا.</p>
+              </div>
+
+              <!-- Loading State -->
+              <div id="loadingState" class="state-box loading-state" hidden>
+                <div class="spinner" aria-hidden="true"></div>
+                <p>جاري تجهيز الوصف...</p>
+              </div>
+
+              <!-- Error State -->
+              <div id="errorState" class="state-box error-state" hidden>
+                <p id="errorStateMessage"></p>
+              </div>
+
+              <!-- Result Content -->
+              <div id="resultContent" hidden>
+
+                <div class="result-block">
+                  <div class="result-block-header">
+                    <h3>عنوان المنتج</h3>
+                    <button type="button" class="copy-btn" data-copy-target="resultTitle">نسخ</button>
+                  </div>
+                  <p id="resultTitle" class="result-text result-title-text"></p>
+                </div>
+
+                <div class="result-block">
+                  <div class="result-block-header">
+                    <h3>الوصف التسويقي</h3>
+                    <button type="button" class="copy-btn" data-copy-target="resultDescription">نسخ</button>
+                  </div>
+                  <p id="resultDescription" class="result-text"></p>
+                </div>
+
+                <div class="result-block">
+                  <div class="result-block-header">
+                    <h3>المميزات</h3>
+                    <button type="button" class="copy-btn" data-copy-target="resultFeatures">نسخ</button>
+                  </div>
+                  <ul id="resultFeatures" class="result-features"></ul>
+                </div>
+
+                <div class="result-block">
+                  <div class="result-block-header">
+                    <h3>دعوة لاتخاذ إجراء (CTA)</h3>
+                    <button type="button" class="copy-btn" data-copy-target="resultCta">نسخ</button>
+                  </div>
+                  <p id="resultCta" class="result-text"></p>
+                </div>
+
+                <div class="result-block">
+                  <div class="result-block-header">
+                    <h3>منشور قصير لسوشيال ميديا</h3>
+                    <button type="button" class="copy-btn" data-copy-target="resultSocial">نسخ</button>
+                  </div>
+                  <p id="resultSocial" class="result-text"></p>
+                </div>
+
+                <div class="result-actions">
+                  <button type="button" id="regenerateBtn" class="btn btn-secondary">
+                    <span aria-hidden="true">🔄</span>
+                    <span>توليد نسخة أخرى</span>
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <p class="footer-logo">وصفني</p>
+        <p class="footer-desc">أداة عربية بسيطة لمساعدة أصحاب المشاريع على كتابة أوصاف أفضل لمنتجاتهم.</p>
+      </div>
+      <div class="footer-links">
+        <button type="button" class="link-btn" id="privacyLink">سياسة الخصوصية</button>
+        <button type="button" class="link-btn" id="termsLink">شروط الاستخدام</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Legal Modal -->
+  <div id="legalModal" class="modal" hidden>
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 id="modalTitle"></h2>
+        <button type="button" id="modalClose" class="modal-close" aria-label="إغلاق">✕</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
